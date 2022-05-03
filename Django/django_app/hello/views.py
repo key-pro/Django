@@ -7,9 +7,11 @@ from django.views.generic import TemplateView
 from .forms import HelloForm
 from .models import Friend
 from django.db.models import QuerySet
-from .forms import FriendForm
+#from .forms import FriendForm
 from django.views.generic import ListView
 from django.views.generic import DetailView
+from .forms import FindForm
+from django.db.models import Q
 
 """def index(request):
     return HttpResponse("Hello Django!!")
@@ -363,3 +365,103 @@ class FriendList(ListView):
 
 class FriendDetail(DetailView):
     model = Friend
+
+"""def find(request):
+    if(request.method == 'POST'):
+        form = FindForm(request.POST)
+        find = request.POST['find']
+        data = Friend.objects.filter(name=find)
+        msg = 'Result: ' + str(data.count())
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data = Friend.objects.all()
+    params = {
+        'title':'Hello',
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+"""
+
+"""def find(request):
+    if(request.method == 'POST'):
+        form = FindForm(request.POST)
+        find = request.POST['find']
+        #data = Friend.objects.filter(name__contains=find)
+        #data = Friend.objects.filter(name__iexact=find)
+        data = Friend.objects.filter(age__lte=int(find))
+        msg = 'Result: ' + str(data.count())
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data = Friend.objects.all()
+    params = {
+        'title':'Hello',
+        'message':msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+"""
+
+"""def find(request):
+    if(request.method == 'POST'):
+        form = FindForm(request.POST)
+        find = request.POST['find']
+        val = find.split()
+        #data = Friend.objects.filter(age__gte=val[0], age__lte=val[1])
+        data = Friend.objects \
+        .filter(age__gte=val[0]) \
+        .filter(age__lte=val[1])
+        msg = 'Result: ' + str(data.count())
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data = Friend.objects.all()
+    params = {
+        'title':'Hello',
+        'message':msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+"""
+
+"""def find(request):
+    if(request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        find = request.POST['find']
+        data = Friend.objects.filter(Q(name__contains=find)|Q(mail__contains=find))
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data = Friend.objects.all()
+    params = {
+        'title':'Hello',
+        'message':msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+"""
+
+def find(request):
+    if(request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        find = request.POST['find']
+        list = find.split()
+        data = Friend.objects.filter(name__in=list)
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data = Friend.objects.all()
+    params = {
+        'title':'Hello',
+        'message':msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)

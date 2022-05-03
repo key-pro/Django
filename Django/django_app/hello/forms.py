@@ -83,10 +83,11 @@ class HelloForm(forms.Form):
     birthday = forms.DateField(label='Birth', \
         widget=forms.DateInput(attrs={'class':'form-control'}))
 
-class FriendForm(forms.ModelForm):
+"""class FriendForm(forms.ModelForm):
     class Meta:
         model = Friend
         fields = ['name','mail','gender','age','birthday']
+"""
 
 def create(request):
     if(request.method == 'POST'):
@@ -99,3 +100,7 @@ def create(request):
         'form':FriendForm(),
     }
     return render(request, 'hello/create.html', params)
+
+class FindForm(forms.Form):
+    find = forms.CharField(label='Find', required=False, \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
