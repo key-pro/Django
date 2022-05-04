@@ -7,11 +7,13 @@ from django.views.generic import TemplateView
 from .forms import HelloForm
 from .models import Friend
 from django.db.models import QuerySet
-#from .forms import FriendForm
+from .forms import FriendForm
 from django.views.generic import ListView
 from django.views.generic import DetailView
 from .forms import FindForm
 from django.db.models import Q
+from django.db.models import Count, Sum, Avg, Min, Max
+from .forms import CheckForm
 
 """def index(request):
     return HttpResponse("Hello Django!!")
@@ -309,13 +311,14 @@ def index(request):
     return render(request, 'hello/index.html', params)
 """
 
-def index(request):
+"""def index(request):
     data = Friend.objects.all()
     params = {
         'title': 'Hello',
         'data': data,
     }
     return render(request, 'hello/index.html', params)
+"""
 
 # create model
 def create(request):
@@ -447,7 +450,7 @@ class FriendDetail(DetailView):
     return render(request, 'hello/find.html', params)
 """
 
-def find(request):
+"""def find(request):
     if(request.method == 'POST'):
         msg = 'search result:'
         form = FindForm(request.POST)
@@ -465,3 +468,100 @@ def find(request):
         'data':data,
     }
     return render(request, 'hello/find.html', params)
+"""
+
+"""def index(request):
+    data = Friend.objects.all().order_by('age')
+    params = {
+        'title':'Hello',
+        'message':'',
+        'data':data,
+    }
+    return render(request, 'hello/index.html', params)
+"""
+
+"""def index(request):
+    data = Friend.objects.all().order_by('age').reverse()
+    params = {
+        'title':'Hello',
+        'message':'',
+        'data':data,
+    }
+    return render(request, 'hello/index.html', params)
+"""
+
+"""def find(request):
+    if(request.method == 'POST'):
+        msg = 'search result:'
+        form = FindForm(request.POST)
+        find = request.POST['find']
+        list = find.split()
+        data = Friend.objects.all()[int(list[0]):int(list[1])]
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data = Friend.objects.all()
+    params = {
+        'title':'Hello',
+        'message':msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+"""
+
+def index(request):
+    data = Friend.objects.all()
+    re1 = Friend.objects.aggregata(Count('age'))
+    re2 = Friend.objects.aggregata(Sum('age'))
+    re3 = Friend.objects.aggregata(Avg('age'))
+    re4 = Friend.objects.aggregata(Min('age'))
+    re5 = Friend.objects.aggregata(Max('age'))
+    msg = 'count: ' + str(re1['age__count']) \
+        + '<br>Sum: ' + str(re2['age__sum']) \
+        + '<br>Average: ' + str(re3['age__avg']) \
+        + '<br>Min: ' + str(re2['age__min']) \
+        + '<br>Max: ' + str(re2['age__max']) 
+    params = {
+        'title':'Hello',
+        'message':msg,
+        'data':data,
+    }
+    return render(request, 'hello/index.html',params)
+
+
+def find(request):
+    if (request.method == 'POST'):
+        msg = request.POST['find']
+        form = FindForm(request.POST)
+        sql = 'select * from hello_friend'
+        if (msg != ''):
+            sql += ' where ' + msg
+        data = Friend.objects.raw(sql)
+        msg = sql
+    else:
+        msg = 'search words...'
+        form = FindForm()
+        data =Friend.objects.all()
+    params = {
+        'title': 'Hello',
+        'message': msg,
+        'form':form,
+        'data':data,
+    }
+    return render(request, 'hello/find.html', params)
+
+def check(request):
+    params = {
+        'title':'Hello',
+        'message':'check validation',
+        'form':CheckForm(),
+    }
+    if(request.method == 'POST'):
+        form = CheckForm(request.POST)
+        params['form'] = form
+        if(form.is_valid()):
+            params['message'] = 'OK!'
+        else:
+            params['message'] = 'no good.'
+    return render(request, 'hello/check.html', params)

@@ -1,7 +1,6 @@
 from django import forms
 from .models import Friend
 
-
 """class HelloForm(forms.Form):
     name = forms.CharField(label='name')
     mail = forms.CharField(label='mail')
@@ -83,11 +82,10 @@ class HelloForm(forms.Form):
     birthday = forms.DateField(label='Birth', \
         widget=forms.DateInput(attrs={'class':'form-control'}))
 
-"""class FriendForm(forms.ModelForm):
+class FriendForm(forms.ModelForm):
     class Meta:
         model = Friend
         fields = ['name','mail','gender','age','birthday']
-"""
 
 def create(request):
     if(request.method == 'POST'):
@@ -104,3 +102,34 @@ def create(request):
 class FindForm(forms.Form):
     find = forms.CharField(label='Find', required=False, \
         widget=forms.TextInput(attrs={'class':'form-control'}))
+
+"""class CheckForm(forms.Form):
+    str = forms.CharField(label='Name', \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+"""
+
+"""class CheckForm(forms.Form):
+    empty = forms.CharField(label='Empty', empty_value=True, \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+    min = forms.CharField(label='Min', min_length=10, \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+    max = forms.CharField(label='Max', max_length=10, \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+"""
+
+"""class CheckForm(forms.Form):
+    required = forms.IntegerField(label='Required', \
+        widget=forms.NumberInput(attrs={'class':'form-control'}))
+    min = forms.CharField(label='Min', min_length=100, \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+    max = forms.CharField(label='Max', max_length=1000, \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+"""
+
+class CheckForm(forms.Form):
+    date = forms.DateField(label='Date', input_formats=['%d'], \
+        widget=forms.DateInput(attrs={'class':'forms-control'}))
+    time = forms.TimeField(label='Time', \
+        widget=forms.TimeInput(attrs={'class':'form-control'}))
+    datetime = forms.DateTimeField(label='DateTime', \
+        widget=forms.DateTimeInput(attrs={'class':'form-control'}))
