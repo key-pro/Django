@@ -1,6 +1,5 @@
 
 # Create your views here.
-
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import TemplateView
@@ -341,6 +340,7 @@ def create(request):
         return redirect(to='/hello')
     return render(request, 'hello/create.html', params)
 
+
 def edit(request, num):
     obj = Friend.objects.get(id=num)
     if (request.method == 'POST'):
@@ -556,18 +556,20 @@ def find(request):
 
 def check(request):
     params = {
-        'title':'Hello',
-        'message':'check validation',
-        'form':CheckForm(),
+        'title': 'Hello',
+        'message':'check validation.',
+        'form': FriendForm(),
     }
-    if(request.method == 'POST'):
-        form = CheckForm(request.POST)
+    if (request.method == 'POST'):
+        obj = Friend()
+        form = FriendForm(request.POST, instance=obj)
         params['form'] = form
-        if(form.is_valid()):
+        if (form.is_valid()):
             params['message'] = 'OK!'
         else:
             params['message'] = 'no good.'
     return render(request, 'hello/check.html', params)
+
 
 def index(request, num=1):
     data = Friend.objects.all()

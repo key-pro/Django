@@ -1,5 +1,7 @@
 from django import forms
 from .models import Friend
+from django.db import models
+from .models import Friend
 #from .models import Friend, Message 
 
 """class HelloForm(forms.Form):
@@ -83,12 +85,13 @@ class HelloForm(forms.Form):
     birthday = forms.DateField(label='Birth', \
         widget=forms.DateInput(attrs={'class':'form-control'}))
 
-class FriendForm(forms.ModelForm):
+"""class FriendForm(forms.ModelForm):
     class Meta:
         model = Friend
         fields = ['name','mail','gender','age','birthday']
+"""
 
-def create(request):
+"""def create(request):
     if(request.method == 'POST'):
         obj = Friend()
         field = FriendForm(request.POST, instance=obj)
@@ -99,6 +102,7 @@ def create(request):
         'form':FriendForm(),
     }
     return render(request, 'hello/create.html', params)
+"""
 
 class FindForm(forms.Form):
     find = forms.CharField(label='Find', required=False, \
@@ -127,13 +131,14 @@ class FindForm(forms.Form):
         widget=forms.TextInput(attrs={'class':'form-control'}))
 """
 
-class CheckForm(forms.Form):
+"""class CheckForm(forms.Form):
     date = forms.DateField(label='Date', input_formats=['%d'], \
         widget=forms.DateInput(attrs={'class':'forms-control'}))
     time = forms.TimeField(label='Time', \
         widget=forms.TimeInput(attrs={'class':'form-control'}))
     datetime = forms.DateTimeField(label='DateTime', \
         widget=forms.DateTimeInput(attrs={'class':'form-control'}))
+"""
 
 """class MessageForm(forms.ModelForm):
     class Meta:
@@ -145,3 +150,54 @@ class CheckForm(forms.Form):
             'friend': forms.Select(attrs={'class':'form-control form-control-sm'}),
         }
 """
+
+class CheckForm(forms.Form):
+    str = forms.CharField(label='String', \
+        widget=forms.TextInput(attrs={'class':'form-control'}))
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        str = cleaned_data['str']
+        if (str.lower().startswith('no')):
+            raise forms.ValidationError('You input "NO"!')
+
+
+"""def create(request):
+    if (request.method == 'POST'):
+        obj = Friend()
+        friend = FriendForm(request.POST, instance=obj)
+        friend.save()
+        return redirect(to='/hello')
+    params = {
+        'title': 'Hello',
+        'form': FriendForm(),
+    }
+    return render(request, 'hello/create.html', params)
+"""
+
+def check(request):
+    params = {
+        'title': 'Hello',
+        'message':'check validation.',
+        'form': FriendForm(),
+    }
+    if (request.method == 'POST'):
+        obj = Friend()
+        form = FriendForm(request.POST, instance=obj)
+        params['form'] = form
+        if (form.is_valid()):
+            params['message'] = 'OK!'
+        else:
+            params['message'] = 'no good.'
+    return render(request, 'hello/check.html', params)
+
+class FriendForm(forms.ModelForm):
+    class Meta:
+        model = Friend
+        fields = ['name','mail','gender','age','birthday']
+        widgets = {
+            'name': forms.TextInput(attrs={'class':'form-control'}),
+            'mail': forms.EmailInput(attrs={'class':'form-control'}),
+            'age': forms.NumberInput(attrs={'class':'form-control'}),
+            'birthday': forms.DateInput(attrs={'class':'form-control'}),
+        }

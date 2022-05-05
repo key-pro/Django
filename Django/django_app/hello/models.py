@@ -1,19 +1,23 @@
 from django.db import models
+import re
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import ValidationError
 
 # Create your models here.
 
-class Friend(models.Model):
+"""class Friend(models.Model):
     name = models.CharField(max_length=100)
     mail = models.EmailField(max_length=200)
     gender = models.BooleanField()
     age = models.IntegerField(default=0)
     birthday = models.DateField()
-     
+
     def __str__(self):
         return '<Friend:id=' + str(self.id) + ', ' + \
             self.name + '(' + str(self.age) + ')>'
+"""
 
-class Message(models.Model):
+"""class Message(models.Model):
     Friend = models.ForeignKey(Friend, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=300)
@@ -25,3 +29,24 @@ class Message(models.Model):
     
     class Meta:
         ordering= ('pub_date',)
+"""
+
+def number_only(value):
+    if (re.match(r'^[0-9]*$', value) == None):
+        raise ValidationError(
+            '%(value)s is not Number!', \
+            params={'value': value},
+        )
+
+
+class Friend(models.Model):
+    name = models.CharField(max_length=100, \
+        validators=[number_only])
+    mail = models.EmailField(max_length=200)
+    gender = models.BooleanField()
+    age = models.IntegerField()
+    birthday = models.DateField()
+     
+    def __str__(self):
+        return '<Friend:id=' + str(self.id) + ', ' + \
+            self.name + '(' + str(self.age) + ')>'
