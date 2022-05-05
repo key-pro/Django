@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView
 from .forms import HelloForm
 from .models import Friend
+#from .models import Friend, Message
+#from .forms import FriendForm, MessageForm
 from django.db.models import QuerySet
 from .forms import FriendForm
 from django.views.generic import ListView
@@ -14,6 +16,7 @@ from .forms import FindForm
 from django.db.models import Q
 from django.db.models import Count, Sum, Avg, Min, Max
 from .forms import CheckForm
+from django.core.paginator import Paginator
 
 """def index(request):
     return HttpResponse("Hello Django!!")
@@ -510,7 +513,7 @@ class FriendDetail(DetailView):
     return render(request, 'hello/find.html', params)
 """
 
-def index(request):
+"""def index(request):
     data = Friend.objects.all()
     re1 = Friend.objects.aggregata(Count('age'))
     re2 = Friend.objects.aggregata(Sum('age'))
@@ -528,7 +531,7 @@ def index(request):
         'data':data,
     }
     return render(request, 'hello/index.html',params)
-
+"""
 
 def find(request):
     if (request.method == 'POST'):
@@ -565,3 +568,28 @@ def check(request):
         else:
             params['message'] = 'no good.'
     return render(request, 'hello/check.html', params)
+
+def index(request, num=1):
+    data = Friend.objects.all()
+    page = Paginator(data, 3)
+    params = {
+        'title': 'Hello',
+        'message':'',
+        'data': page.get_page(num),
+    }
+    return render(request, 'hello/index.html', params)
+
+"""def message(request, page=1):
+    if (request.method == 'POST'):
+        obj = Message()
+        form = MessageForm(request.POST, instance=obj)
+        form.save()
+    data = Message.objects.all().reverse()
+    paginator = Paginator(data, 5)
+    params = {
+        'title': 'Message',
+        'form': MessageForm(),
+        'data': paginator.get_page(page),
+    }
+    return render(request, 'hello/message.html', params)
+"""

@@ -1,5 +1,6 @@
 from django import forms
 from .models import Friend
+#from .models import Friend, Message 
 
 """class HelloForm(forms.Form):
     name = forms.CharField(label='name')
@@ -133,3 +134,14 @@ class CheckForm(forms.Form):
         widget=forms.TimeInput(attrs={'class':'form-control'}))
     datetime = forms.DateTimeField(label='DateTime', \
         widget=forms.DateTimeInput(attrs={'class':'form-control'}))
+
+"""class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['title','content','friend']
+        widgets = {
+            'title': forms.TextInput(attrs={'class':'form-control form-control-sm'}),
+            'content': forms.Textarea(attrs={'class':'form-control form-control-sm', 'rows':2}),
+            'friend': forms.Select(attrs={'class':'form-control form-control-sm'}),
+        }
+"""
